@@ -1,0 +1,10 @@
+{
+  "name": "Natusiembras Juanita",
+  "short_name": "Natusiembras",
+  "description": "Productos de la mata a la olla",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7faf8",
+  "theme_color": "#0757a6",
+  "lang": "es"
+}

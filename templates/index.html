@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Inicio | Natusiembras Juanita{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <span class="tag">🌱 DIRECTO DE NUESTRA FINCA</span>
+        <h1>Natusiembras <em>Juanita</em></h1>
+        <h2>Productos de la mata a la olla.</h2>
+        <p>Hortalizas frescas y naturales cultivadas con dedicación para llevar calidad directamente a tu mesa.</p>
+
+        <div class="hero-buttons">
+            <a class="primary-button" href="/productos">Ver productos</a>
+            <a class="secondary-button" href="#finca">Conocer nuestra finca</a>
+        </div>
+    </div>
+
+    <div class="hero-vegetables">
+        <div class="vegetable tomato">🍅</div>
+        <div class="vegetable cucumber">🥒</div>
+        <div class="vegetable pepper">🥬</div>
+        <div class="vegetable lettuce">🥬</div>
+    </div>
+</section>
+
+<section class="features">
+    <div>🌿 <strong>Naturales</strong><small>Directos del cultivo</small></div>
+    <div>🥬 <strong>Frescos</strong><small>Cosecha según disponibilidad</small></div>
+    <div>🚚 <strong>Directos de la finca</strong><small>Del campo a tu mesa</small></div>
+    <div>💚 <strong>Calidad</strong><small>Cuidamos cada producto</small></div>
+</section>
+
+<section class="section">
+    <div class="section-title">
+        <span>🌱 Nuestra selección</span>
+        <h2>Productos destacados</h2>
+    </div>
+    <div id="featured-products" class="product-grid"></div>
+</section>
+
+<section id="finca" class="farm-section">
+    <div>
+        <span class="tag">NUESTRA FINCA</span>
+        <h2>Del cultivo a tu mesa</h2>
+        <p>
+            En Natusiembras Juanita queremos acercar el campo a las familias.
+            Nuestro objetivo es ofrecer hortalizas frescas y de calidad,
+            cultivadas con responsabilidad y llevadas directamente al consumidor.
+        </p>
+    </div>
+    <div class="steps">
+        <div><b>01</b> Cultivamos</div>
+        <div><b>02</b> Cuidamos</div>
+        <div><b>03</b> Cosechamos</div>
+        <div><b>04</b> Preparamos</div>
+        <div><b>05</b> Entregamos</div>
+    </div>
+</section>
+
+<section id="contacto" class="contact-section">
+    <h2>¿Quieres hacer un pedido?</h2>
+    <p>Selecciona tus productos y envíanos tu pedido.</p>
+    <a href="/productos" class="primary-button">Comprar hortalizas</a>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function cargarDestacados() {
+    const response = await fetch('/api/productos');
+    const productos = await response.json();
+
+    document.getElementById('featured-products').innerHTML =
+        productos.slice(0, 4).map(p => tarjetaProducto(p)).join('');
+}
+
+function tarjetaProducto(p) {
+    const icono = p.nombre.toLowerCase().includes('tomate') ? '🍅' :
+                  p.nombre.toLowerCase().includes('pepinillo') ? '🥒' :
+                  p.nombre.toLowerCase().includes('pimiento') ? '🥬' : 
+                  p.nombre.toLowerCase().includes('vainitas') ? '🥬' : '🥬';
+
+    return `
+    <article class="product-card">
+        <div class="product-image">${icono}</div>
+        <div class="product-info">
+            <span>${p.categoria || 'Hortalizas'}</span>
+            <h3>${p.nombre}</h3>
+            <p>${p.descripcion || ''}</p>
+            <div class="product-bottom">
+                <strong>$${Number(p.precio).toFixed(2)} / ${p.unidad}</strong>
+                <button onclick="agregarProducto(${p.id})">Agregar</button>
+            </div>
+        </div>
+    </article>`;
+}
+
+cargarDestacados();
+</script>
+{% endblock %}

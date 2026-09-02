@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Producto | Natusiembras Juanita{% endblock %}
+
+{% block content %}
+<section class="section product-detail" id="detalle"></section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function cargarProducto() {
+    const response = await fetch('/api/productos/{{ producto_id }}');
+    const p = await response.json();
+
+    if (p.error) {
+        document.getElementById('detalle').innerHTML = '<h2>Producto no encontrado</h2>';
+        return;
+    }
+
+    const icono = p.nombre.toLowerCase().includes('tomate') ? '🍅' :
+                  p.nombre.toLowerCase().includes('pepinillo') ? '🥒' :
+                  p.nombre.toLowerCase().includes('pimiento') ? '🥬' :
+                  p.nombre.toLowerCase().includes('vainitas') ? '🥬' : '🥬';
+
+    document.getElementById('detalle').innerHTML = `
+        <div class="detail-image">${icono}</div>
+        <div class="detail-content">
+            <span class="tag">${p.categoria || 'HORTALIZA'}</span>
+            <h1>${p.nombre}</h1>
+            <p class="lead">${p.descripcion || ''}</p>
+
+            <div class="info-box">
+                <h3>🌿 Propiedades nutricionales</h3>
+                <p>${p.propiedades || 'Información próximamente disponible.'}</p>
+            </div>
+
+            <div class="info-box">
+                <h3>🍽️ ¿Cómo consumirlo?</h3>
+                <p>Ideal para ensaladas, guisos y diferentes preparaciones según tus preferencias.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>📦 Conservación</h3>
+                <p>Conservar según el estado de maduración y las recomendaciones para cada hortaliza.</p>
+            </div>
+
+            <div class="detail-buy">
+                <strong>$${Number(p.precio).toFixed(2)} / ${p.unidad}</strong>
+                <button class="primary-button" onclick="agregarProducto(${p.id})">Agregar al pedido</button>
+            </div>
+        </div>`;
+}
+
+cargarProducto();
+</script>
+{% endblock %}

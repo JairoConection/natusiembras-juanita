@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Productos | Natusiembras Juanita{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <span class="tag">NATUSIEMBRAS JUANITA</span>
+    <h1>Nuestras hortalizas</h1>
+    <p>Elige tus productos y agrégalos a tu pedido.</p>
+</section>
+
+<section class="section">
+    <input class="search" id="buscar" placeholder="🔎 Buscar producto...">
+    <div id="product-grid" class="product-grid"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let todosLosProductos = [];
+
+async function cargarProductos() {
+    const response = await fetch('/api/productos');
+    todosLosProductos = await response.json();
+    mostrarProductos(todosLosProductos);
+}
+
+function mostrarProductos(productos) {
+    document.getElementById('product-grid').innerHTML =
+        productos.map(p => tarjetaProducto(p)).join('');
+}
+
+function tarjetaProducto(p) {
+    const icono = p.nombre.toLowerCase().includes('tomate') ? '🍅' :
+                  p.nombre.toLowerCase().includes('pepinillo') ? '🥒' :
+                  p.nombre.toLowerCase().includes('pimiento') ? '🥬':
+                  p.nombre.toLowerCase().includes('vainitas') ? '🥬' : '🥬';
+
+    return `
+    <article class="product-card">
+        <div class="product-image">${icono}</div>
+        <div class="product-info">
+            <span>${p.categoria || 'Hortalizas'}</span>
+            <h3>${p.nombre}</h3>
+            <p>${p.descripcion || ''}</p>
+            <p class="property">${p.propiedades || ''}</p>
+            <div class="product-bottom">
+                <strong>$${Number(p.precio).toFixed(2)} / ${p.unidad}</strong>
+                <button onclick="agregarProducto(${p.id})">Agregar</button>
+            </div>
+            <a href="/producto/${p.id}" class="details">Ver información →</a>
+        </div>
+    </article>`;
+}
+
+document.getElementById('buscar').addEventListener('input', e => {
+    const texto = e.target.value.toLowerCase();
+    mostrarProductos(
+        todosLosProductos.filter(p =>
+            p.nombre.toLowerCase().includes(texto) ||
+            (p.categoria || '').toLowerCase().includes(texto)
+        )
+    );
+});
+
+cargarProductos();
+</script>
+{% endblock %}

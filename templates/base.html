@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0757a6">
+    <meta name="description" content="Natusiembras Juanita - Productos de la mata a la olla">
+    <title>{% block title %}Natusiembras Juanita{% endblock %}</title>
+
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/" class="brand">
+        <span class="brand-leaf">🌱</span>
+        <span>
+            <strong>Natusiembras</strong>
+            <small>Juanita</small>
+        </span>
+    </a>
+
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/productos">Productos</a>
+        <a href="/#finca">Nuestra finca</a>
+        <a href="/#contacto">Contacto</a>
+        <button class="cart-button" onclick="abrirCarrito()">
+            🛒 <span id="cart-count">0</span>
+        </button>
+    </nav>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<div id="cart-modal" class="modal hidden">
+    <div class="modal-card">
+        <button class="close" onclick="cerrarCarrito()">×</button>
+        <h2>🛒 Mi pedido</h2>
+        <div id="cart-items"></div>
+        <div class="cart-total">
+            Total: $<span id="cart-total">0.00</span>
+        </div>
+
+        <form id="pedido-form">
+            <input id="cliente-nombre" placeholder="Nombre completo" required>
+            <input id="cliente-telefono" placeholder="Teléfono / WhatsApp" required>
+            <input id="cliente-direccion" placeholder="Dirección de entrega">
+            <textarea id="cliente-observaciones" placeholder="Observaciones"></textarea>
+            <button class="primary-button" type="submit">Enviar pedido</button>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
